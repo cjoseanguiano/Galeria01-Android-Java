@@ -128,9 +128,7 @@ public class RvMediaFragment extends BaseFragment {
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pos -> {
-                    Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show();
-                });
+                .subscribe(pos -> Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show());
 
         adapter.getSelectedClicks()
                 .subscribeOn(Schedulers.newThread())

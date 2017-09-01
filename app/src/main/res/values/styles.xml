@@ -21,4 +21,6 @@
         <item name="colorControlNormal">#FFF</item>
         <item name="colorControlHighlight">#FFF</item>
     </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

@@ -10,4 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hola Mundo" />
+
+    <Button
+        android:id="@+id/fragments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fragments"
+        android:gravity="center"
+        android:layout_below="@+id/buttonHome"/>
 </RelativeLayout>

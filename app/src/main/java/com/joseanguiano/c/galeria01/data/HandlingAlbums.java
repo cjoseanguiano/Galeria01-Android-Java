@@ -70,12 +70,6 @@ public class HandlingAlbums extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addFolderToWhiteList(String path) {
-        SQLiteDatabase db = getWritableDatabase();
-        changeSatusAlbum(db, Album.withPath(path), INCLUDED);
-        db.close();
-    }
-
     public ArrayList<String> getExcludedFolders(Context context) {
         ArrayList<String>  list = new ArrayList<>();
         HashSet<File> storageRoots = StorageHelper.getStorageRoots(context);
@@ -87,21 +81,6 @@ public class HandlingAlbums extends SQLiteOpenHelper {
         return list;
     }
 
-    private void changeSatusAlbum(SQLiteDatabase db, Album album, int status) {
-        ContentValues values = new ContentValues();
-        values.put(ALBUM_STATUS, status);
-        if (exist(db, album.getPath())) {
-            db.update(TABLE_ALBUMS, values, ALBUM_PATH+"=?", new String[]{ album.getPath() });
-        } else {
-            values.put(ALBUM_PATH, album.getPath());
-            values.put(ALBUM_PINNED, 0);
-            values.put(ALBUM_SORTING_MODE, SortingMode.DATE.getValue());
-            values.put(ALBUM_SORTING_ORDER, SortingOrder.DESCENDING.getValue());
-            values.put(ALBUM_ID, album.getId());
-            db.insert(TABLE_ALBUMS, null, values);
-        }
-    }
-
     public static ContentValues getDefaults(String path) {
         ContentValues values = new ContentValues();
         values.put(ALBUM_PATH, path);
@@ -110,18 +89,6 @@ public class HandlingAlbums extends SQLiteOpenHelper {
         values.put(ALBUM_SORTING_ORDER, SortingOrder.DESCENDING.getValue());
         values.put(ALBUM_ID, -1);
         return values;
-    }
-
-
-    public void clearStatusFolder(String path) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(ALBUM_STATUS, "");
-        if (exist(db, path))
-            db.update(TABLE_ALBUMS, values, ALBUM_PATH+"=?", new String[]{ path });
-        // NOTE: it make no difference if the folder was included
-        //excludedFolders.remove(path);
-        db.close();
     }
 
     /**
@@ -138,17 +105,6 @@ public class HandlingAlbums extends SQLiteOpenHelper {
         cur.close();
         db.close();
         return list;
-    }
-
-    public int getFoldersCount(int status) {
-        int c = 0;
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cur = db.query(TABLE_ALBUMS, new String[]{"count(*)"}, ALBUM_STATUS + "=?", new String[]{String.valueOf(status)}, null, null, null);
-        if (cur.moveToFirst())
-            c = cur.getInt(0);
-        cur.close();
-        db.close();
-        return c;
     }
 
     private static boolean exist(SQLiteDatabase db, String path) {

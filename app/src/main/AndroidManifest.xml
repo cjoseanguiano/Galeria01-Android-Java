@@ -65,7 +65,8 @@
             </intent-filter>
         </activity>
         <!-- <activity android:name=".activities.base.SharedMediaActivity" /> -->
-        <activity android:name=".activities.HomeActivity"></activity>
+        <activity android:name=".activities.HomeActivity" />
+        <activity android:name=".activities.MainAlbumListActivity"></activity>
     </application>
 
 </manifest>
