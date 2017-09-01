@@ -1,42 +1,24 @@
 package com.joseanguiano.c.galeria01.activities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.CallSuper;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joseanguiano.c.galeria01.BuildConfig;
 import com.joseanguiano.c.galeria01.R;
 import com.joseanguiano.c.galeria01.activities.base.SharedMediaActivity;
 import com.joseanguiano.c.galeria01.data.Album;
-import com.joseanguiano.c.galeria01.data.Media;
-import com.joseanguiano.c.galeria01.data.StorageHelper;
 import com.joseanguiano.c.galeria01.fragments.AlbumsFragment;
 import com.joseanguiano.c.galeria01.fragments.BaseFragment;
 import com.joseanguiano.c.galeria01.fragments.RvMediaFragment;
-import com.joseanguiano.c.galeria01.util.StringUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.iconics.view.IconicsImageView;
-import com.orhanobut.hawk.Hawk;
-
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,11 +85,7 @@ public class MainActivity extends SharedMediaActivity {
     private void initUi() {
 
         setSupportActionBar(toolbar);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar,
-                R.string.drawer_open, R.string.drawer_close) {
-            public void onDrawerClosed(View view) { }
-            public void onDrawerOpened(View drawerView) { }
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.drawer_open, R.string.drawer_close) {
         };
 
 

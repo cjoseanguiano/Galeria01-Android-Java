@@ -81,19 +81,6 @@ public class AlbumsAdapter extends ThemedAdapter<AlbumsAdapter.ViewHolder> {
         return sortingMode;
     }
 
-
-    public List<Album> getSelectedAlbums() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return albums.stream().filter(Album::isSelected).collect(Collectors.toList());
-        } else {
-            ArrayList<Album> arrayList = new ArrayList<>(selectedCount);
-            for (Album album : albums)
-                if (album.isSelected())
-                    arrayList.add(album);
-            return arrayList;
-        }
-    }
-
     public Album getFirstSelectedAlbum() {
         if (selectedCount > 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -234,15 +221,6 @@ public class AlbumsAdapter extends ThemedAdapter<AlbumsAdapter.ViewHolder> {
         //((ThemedActivity) context).runOnUiThread(() -> notifyItemInserted(finalI));
         return i;
 
-    }
-
-    private void reverseOrder() {
-        int z = 0, size = getItemCount();
-        while (z < size && albums.get(z).isPinned())
-            z++;
-
-        for (int i = Math.max(0, z), mid = (i+size)>>1, j = size-1; i < mid; i++, j--)
-            Collections.swap(albums, i, j);
     }
 
     @Override

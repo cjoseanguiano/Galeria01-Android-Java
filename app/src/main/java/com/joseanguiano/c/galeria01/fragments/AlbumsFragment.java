@@ -152,8 +152,7 @@ public class AlbumsFragment extends BaseFragment {
         rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
 
-        adapter = new AlbumsAdapter(
-                getContext(), sortingMode(), sortingOrder());
+        adapter = new AlbumsAdapter(getContext(), sortingMode(), sortingOrder());
 
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())

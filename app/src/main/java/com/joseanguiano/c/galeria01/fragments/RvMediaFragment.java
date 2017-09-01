@@ -93,8 +93,6 @@ public class RvMediaFragment extends BaseFragment {
     private void display() {
 
         adapter.clear();
-
-
         CPHelper.getMedia(getContext(), album, sortingMode(), sortingOrder())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -125,8 +123,7 @@ public class RvMediaFragment extends BaseFragment {
         rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
 
-        adapter = new MediaAdapter(
-                getContext(), sortingMode(), sortingOrder());
+        adapter = new MediaAdapter(getContext(), sortingMode(), sortingOrder());
 
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
