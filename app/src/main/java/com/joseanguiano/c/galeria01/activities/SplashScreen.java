@@ -84,7 +84,8 @@ public class SplashScreen extends SharedMediaActivity {
     }
 
     private void start() {
-        startActivity(new Intent(SplashScreen.this, MainActivity.class));
+//        startActivity(new Intent(SplashScreen.this, MainActivity.class));
+        startActivity(new Intent(SplashScreen.this, HomeActivity.class));
         finish();
     }
 
