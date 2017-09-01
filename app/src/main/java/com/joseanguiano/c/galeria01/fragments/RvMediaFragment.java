@@ -85,7 +85,6 @@ public class RvMediaFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
-//        updateToolbar();
     }
 
     private void display() {
@@ -104,7 +103,6 @@ public class RvMediaFragment extends BaseFragment {
                             album.setCount(getCount());
                             refresh.setRefreshing(false);
                         });
-
     }
 
     @Nullable
@@ -132,7 +130,6 @@ public class RvMediaFragment extends BaseFragment {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
-//                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 
@@ -146,8 +143,6 @@ public class RvMediaFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         display();
     }
-
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -172,19 +167,6 @@ public class RvMediaFragment extends BaseFragment {
                 ? Hawk.get("n_columns_media", 3)
                 : Hawk.get("n_columns_media_landscape", 4);
     }
-
-/*    private void updateToolbar() {
-        if (editMode())
-            act.updateToolbar(
-                    String.format(Locale.ENGLISH, "%d/%d",
-                            adapter.getSelectedCount(), adapter.getItemCount()),
-                    GoogleMaterial.Icon.gmd_check,
-                    v -> adapter.clearSelected());
-        else act.updateToolbar(
-                album.getName(),
-                GoogleMaterial.Icon.gmd_arrow_back,
-                v -> act.goBackToAlbums());
-    }*/
 
     public SortingMode sortingMode() {
         return adapter != null
