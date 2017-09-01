@@ -94,7 +94,6 @@ public class AlbumsFragment extends BaseFragment {
                         },
                         () -> {
                             db.close();
-                            act.nothingToShow(getCount() == 0);
                             refresh.setRefreshing(false);
                         });
     }
