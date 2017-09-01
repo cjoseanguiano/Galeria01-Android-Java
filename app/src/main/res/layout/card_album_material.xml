@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <org.horaapps.leafpic.views.SquareRelativeLayout
+            <com.joseanguiano.c.galeria01.views.SquareRelativeLayout
                 android:id="@+id/header_album_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -32,12 +32,12 @@
                     app:iiv_color="@color/md_white_1000"
                     app:iiv_icon="gmd-check"
                     tools:targetApi="lollipop" />
-                <org.horaapps.leafpic.views.SquareImageView
+                <com.joseanguiano.c.galeria01.views.SquareImageView
                     android:id="@+id/album_preview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop" />
-            </org.horaapps.leafpic.views.SquareRelativeLayout>
+            </com.joseanguiano.c.galeria01.views.SquareRelativeLayout>
             <View
                 android:id="@+id/album_card_divider"
                 android:layout_width="match_parent"

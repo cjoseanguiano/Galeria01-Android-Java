@@ -33,9 +33,9 @@
             android:layout_margin="@dimen/small_spacing"
             android:gravity="center_horizontal"/>
     </LinearLayout>
-    <com.jetradar.desertplaceholder.DesertPlaceholder
-        android:id="@+id/nothing_to_show_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+    <!--<com.jetradar.desertplaceholder.DesertPlaceholder-->
+        <!--android:id="@+id/nothing_to_show_placeholder"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone"/>-->
 </RelativeLayout>

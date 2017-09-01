@@ -240,7 +240,7 @@ public class MainActivity extends SharedMediaActivity {
     }
 
     public void nothingToShow(boolean status) {
-        findViewById(R.id.nothing_to_show_placeholder).setVisibility(status ? View.VISIBLE : View.GONE);
+//        findViewById(R.id.nothing_to_show_placeholder).setVisibility(status ? View.VISIBLE : View.GONE);
     }
 
     @Deprecated
@@ -251,10 +251,10 @@ public class MainActivity extends SharedMediaActivity {
 
         if (status && Hawk.get("emoji_easter_egg", 0) == 1) {
             findViewById(R.id.ll_emoji_easter_egg).setVisibility(View.VISIBLE);
-            findViewById(R.id.nothing_to_show_placeholder).setVisibility(View.VISIBLE);
+//            findViewById(R.id.nothing_to_show_placeholder).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.ll_emoji_easter_egg).setVisibility(View.GONE);
-            findViewById(R.id.nothing_to_show_placeholder).setVisibility(View.GONE);
+//            findViewById(R.id.nothing_to_show_placeholder).setVisibility(View.GONE);
         }
     }
 

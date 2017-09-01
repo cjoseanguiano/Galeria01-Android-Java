@@ -13,7 +13,7 @@
         android:id="@+id/cont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <org.horaapps.leafpic.views.SquareRelativeLayout
+        <com.joseanguiano.c.galeria01.views.SquareRelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/header_album_card"
@@ -30,7 +30,7 @@
                 app:iiv_color="@color/md_white_1000"
                 app:iiv_icon="gmd-check"
                 tools:targetApi="lollipop" />
-            <org.horaapps.leafpic.views.SquareImageView
+            <com.joseanguiano.c.galeria01.views.SquareImageView
                 android:id="@+id/album_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,6 +89,6 @@
                     android:scrollHorizontally="true"
                     android:visibility="gone"/>
             </LinearLayout>
-        </org.horaapps.leafpic.views.SquareRelativeLayout>
+        </com.joseanguiano.c.galeria01.views.SquareRelativeLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
