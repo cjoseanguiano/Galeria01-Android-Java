@@ -61,7 +61,6 @@ public class MainActivity extends SharedMediaActivity {
 
     public void displayMedia(Album album) {
         albumsMode = false;
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         getSupportFragmentManager()
                 .beginTransaction()

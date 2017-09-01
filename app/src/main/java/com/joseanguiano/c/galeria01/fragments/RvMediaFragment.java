@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joseanguiano.c.galeria01.R;
@@ -38,7 +36,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +77,7 @@ public class RvMediaFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+//        act = ((MainAlbumListActivity) context);
         act = ((MainActivity) context);
     }
 
@@ -87,7 +85,7 @@ public class RvMediaFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
-        updateToolbar();
+//        updateToolbar();
     }
 
     private void display() {
@@ -134,7 +132,7 @@ public class RvMediaFragment extends BaseFragment {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
-                    updateToolbar();
+//                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 
@@ -175,7 +173,7 @@ public class RvMediaFragment extends BaseFragment {
                 : Hawk.get("n_columns_media_landscape", 4);
     }
 
-    private void updateToolbar() {
+/*    private void updateToolbar() {
         if (editMode())
             act.updateToolbar(
                     String.format(Locale.ENGLISH, "%d/%d",
@@ -186,7 +184,7 @@ public class RvMediaFragment extends BaseFragment {
                 album.getName(),
                 GoogleMaterial.Icon.gmd_arrow_back,
                 v -> act.goBackToAlbums());
-    }
+    }*/
 
     public SortingMode sortingMode() {
         return adapter != null
