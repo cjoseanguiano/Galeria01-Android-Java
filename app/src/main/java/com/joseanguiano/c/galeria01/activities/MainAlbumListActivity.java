@@ -13,8 +13,6 @@ import com.joseanguiano.c.galeria01.fragments.VideoAlbumFragment;
 
 public class MainAlbumListActivity extends AppCompatActivity implements PhotoAlbumFragment.OnMediaSelectedPhotoAlbum, VideoAlbumFragment.OnMediaSelectedVideoAlbum{
     public static final String TAG = MainAlbumListActivity.class.getSimpleName();
-    private static final String BACK_PRESSED = "back_pressed";
-    private String body;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -19,17 +19,10 @@ import com.joseanguiano.c.galeria01.R;
 import java.util.ArrayList;
 
 @SuppressLint("ValidFragment")
-public class VideoAlbumFragment extends Fragment implements MediaAdapterAllAlbumClickListener {
+public class VideoAlbumFragment extends Fragment {
 
     private static final String TAG = VideoAlbumFragment.class.getSimpleName();
-    private OnMediaSelectedVideoAlbum mCallback;
     private View view = null;
-
-    @Override
-    public void itemClicked(DataPicturesAlbum dataPicturesAlbums, String folder, String type, boolean backPressed) {
-        Log.i(TAG, "itemClicked: ");
-    }
-
 
     public interface OnMediaSelectedVideoAlbum {
         void onMediaSelected(String message, String type, boolean backPressed);
@@ -39,7 +32,7 @@ public class VideoAlbumFragment extends Fragment implements MediaAdapterAllAlbum
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mCallback = (OnMediaSelectedVideoAlbum) context;
+            OnMediaSelectedVideoAlbum mCallback = (OnMediaSelectedVideoAlbum) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement ProgressBar");

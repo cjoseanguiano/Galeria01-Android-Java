@@ -10,17 +10,11 @@ import android.view.ViewGroup;
 
 import com.joseanguiano.c.galeria01.R;
 
-import java.util.ArrayList;
-
 @SuppressLint("ValidFragment")
-public class PhotoAlbumFragment extends Fragment implements MediaAdapterAllAlbumClickListener {
+public class PhotoAlbumFragment extends Fragment {
 
     private static final String TAG = PhotoAlbumFragment.class.getSimpleName();
-    private OnMediaSelectedPhotoAlbum mCallback;
     private View view = null;
-    private boolean boolean_folder;
-    private boolean backPressed = false;
-    public static ArrayList<DataPicturesAlbum> modelimages = new ArrayList<>();
 
     public PhotoAlbumFragment() {
     }
@@ -33,7 +27,7 @@ public class PhotoAlbumFragment extends Fragment implements MediaAdapterAllAlbum
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mCallback = (OnMediaSelectedPhotoAlbum) context;
+            OnMediaSelectedPhotoAlbum mCallback = (OnMediaSelectedPhotoAlbum) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement ProgressBar");
@@ -43,12 +37,6 @@ public class PhotoAlbumFragment extends Fragment implements MediaAdapterAllAlbum
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void itemClicked(DataPicturesAlbum d, String message, String type, boolean backPressed) {
-        mCallback.onMediaSelected(message, type, backPressed);
-
     }
 
     @Override
