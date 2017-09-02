@@ -20,6 +20,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.joseanguiano.c.galeria01.R;
 import com.joseanguiano.c.galeria01.activities.MainActivity;
+import com.joseanguiano.c.galeria01.activities.MainAlbumListActivity;
 import com.joseanguiano.c.galeria01.adapters.AlbumsAdapter;
 import com.joseanguiano.c.galeria01.data.Album;
 import com.joseanguiano.c.galeria01.data.AlbumsHelper;
@@ -76,7 +77,7 @@ public class AlbumsFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
-        updateToolbar();
+//        updateToolbar();
     }
 
     private void displayAlbums() {
@@ -127,7 +128,7 @@ public class AlbumsFragment extends BaseFragment {
                 : Hawk.get("n_columns_folders_landscape", 3);
     }
 
-    private void updateToolbar() {
+   /* private void updateToolbar() {
         if (editMode())
             //todo improve
             act.updateToolbar(
@@ -136,7 +137,7 @@ public class AlbumsFragment extends BaseFragment {
                     GoogleMaterial.Icon.gmd_check,
                     v -> adapter.clearSelected());
         else act.resetToolbar();
-    }
+    }*/
 
     @Nullable
     @Override
@@ -156,14 +157,14 @@ public class AlbumsFragment extends BaseFragment {
 
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(album -> act.displayMedia(album));
+                .observeOn(AndroidSchedulers.mainThread());
+//                .subscribe(album -> act.displayMedia(album));
 
         adapter.getSelectedClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
-                    updateToolbar();
+//                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 

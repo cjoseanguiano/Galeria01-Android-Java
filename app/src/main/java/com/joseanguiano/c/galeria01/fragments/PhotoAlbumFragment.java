@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,8 +24,11 @@ import android.widget.Toast;
 
 import com.joseanguiano.c.galeria01.R;
 import com.joseanguiano.c.galeria01.activities.MainActivity;
+import com.joseanguiano.c.galeria01.activities.MainAlbumListActivity;
+import com.joseanguiano.c.galeria01.adapters.AlbumsAdapter;
 import com.joseanguiano.c.galeria01.adapters.MediaAdapter;
 import com.joseanguiano.c.galeria01.data.Album;
+import com.joseanguiano.c.galeria01.data.AlbumsHelper;
 import com.joseanguiano.c.galeria01.data.HandlingAlbums;
 import com.joseanguiano.c.galeria01.data.Media;
 import com.joseanguiano.c.galeria01.data.filter.FilterMode;
@@ -51,102 +55,62 @@ public class PhotoAlbumFragment extends BaseFragment {
 
     private static final String TAG = "asd";
 
-    @BindView(R.id.media)
+    @BindView(R.id.albums)
     RecyclerView rv;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout refresh;
 
-    private MediaAdapter adapter;
+    private AlbumsAdapter adapter;
     private GridSpacingItemDecoration spacingDecoration;
 
-    private MainActivity act;
+    private MainAlbumListActivity act;
+    private boolean hidden = false;
+    ArrayList<String> excuded = new ArrayList<>();
 
-    private Album album;
-
-    public static RvMediaFragment make(Album album) {
-        RvMediaFragment f = new RvMediaFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("album", album);
-        f.setArguments(bundle);
-        return f;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        excuded = db().getExcludedFolders(getContext());
         setHasOptionsMenu(true);
-
-        album = getArguments().getParcelable("album");
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        act = ((MainAlbumListActivity) context);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         clearSelected();
-        updateToolbar();
     }
 
-    private void display() {
-
+    private void displayAlbums() {
         adapter.clear();
-        CPHelper.getMedia(getContext(), album, sortingMode(), sortingOrder())
+        SQLiteDatabase db = HandlingAlbums.getInstance(getContext()).getReadableDatabase();
+        CPHelper.getAlbums(getContext(), hidden, excuded, sortingMode(), sortingOrder())
                 .subscribeOn(Schedulers.io())
+                .map(album -> album.withSettings(HandlingAlbums.getSettings(db, album.getPath())))
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(media -> MediaFilter.getFilter(album.filterMode()).accept(media))
-                .subscribe(media -> adapter.add(media),
+                .subscribe(
+                        album -> adapter.add(album),
                         throwable -> {
                             refresh.setRefreshing(false);
-                            Log.wtf("asd", throwable);
+                            throwable.printStackTrace();
                         },
                         () -> {
-                            album.setCount(getCount());
+                            db.close();
                             refresh.setRefreshing(false);
                         });
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.fragment_rv_media, null);
-        ButterKnife.bind(this, v);
-
-        int spanCount = columnsCount();
-        spacingDecoration = new GridSpacingItemDecoration(spanCount, Measure.pxToDp(3, getContext()), true);
-        rv.setHasFixedSize(true);
-        rv.addItemDecoration(spacingDecoration);
-        rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
-
-        adapter = new MediaAdapter(getContext(), sortingMode(), sortingOrder());
-
-        adapter.getClicks()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pos -> Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show());
-
-        adapter.getSelectedClicks()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(album -> {
-                    updateToolbar();
-                    getActivity().invalidateOptionsMenu();
-                });
-
-        refresh.setOnRefreshListener(this::display);
-        rv.setAdapter(adapter);
-        return v;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        display();
+        displayAlbums();
     }
-
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -158,43 +122,63 @@ public class PhotoAlbumFragment extends BaseFragment {
         int columnsCount = columnsCount();
 
         if (columnsCount != ((GridLayoutManager) rv.getLayoutManager()).getSpanCount()) {
-            ((GridLayoutManager) rv.getLayoutManager()).getSpanCount();
             rv.removeItemDecoration(spacingDecoration);
             spacingDecoration = new GridSpacingItemDecoration(columnsCount, Measure.pxToDp(3, getContext()), true);
-            rv.setLayoutManager(new GridLayoutManager(getContext(), columnsCount));
             rv.addItemDecoration(spacingDecoration);
+            rv.setLayoutManager(new GridLayoutManager(getContext(), columnsCount));
         }
     }
 
     public int columnsCount() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
-                ? Hawk.get("n_columns_media", 3)
-                : Hawk.get("n_columns_media_landscape", 4);
+                ? Hawk.get("n_columns_folders", 2)
+                : Hawk.get("n_columns_folders_landscape", 3);
     }
 
-    private void updateToolbar() {
-        if (editMode())
-            act.updateToolbar(
-                    String.format(Locale.ENGLISH, "%d/%d",
-                            adapter.getSelectedCount(), adapter.getItemCount()),
-                    GoogleMaterial.Icon.gmd_check,
-                    v -> adapter.clearSelected());
-        else act.updateToolbar(
-                album.getName(),
-                GoogleMaterial.Icon.gmd_arrow_back,
-                v -> act.goBackToAlbums());
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_albums, null);
+        ButterKnife.bind(this, v);
+
+        int spanCount = columnsCount();
+        spacingDecoration = new GridSpacingItemDecoration(spanCount, Measure.pxToDp(3, getContext()), true);
+        rv.setHasFixedSize(true);
+        rv.addItemDecoration(spacingDecoration);
+        rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
+
+        adapter = new AlbumsAdapter(getContext(), sortingMode(), sortingOrder());
+
+        adapter.getClicks()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(album -> act.displayMedia(album));
+
+        adapter.getSelectedClicks()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(album -> {
+                    getActivity().invalidateOptionsMenu();
+                });
+
+        refresh.setOnRefreshListener(this::displayAlbums);
+        rv.setAdapter(adapter);
+        return v;
     }
 
     public SortingMode sortingMode() {
         return adapter != null
                 ? adapter.sortingMode()
-                : album.settings.getSortingMode();
+                : AlbumsHelper.getSortingMode(getContext());
     }
 
     public SortingOrder sortingOrder() {
         return adapter != null
                 ? adapter.sortingOrder()
-                : album.settings.getSortingOrder();
+                : AlbumsHelper.getSortingOrder(getContext());
     }
 
     private HandlingAlbums db() {
@@ -205,13 +189,12 @@ public class PhotoAlbumFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.grid_media, menu);
+        inflater.inflate(R.menu.grid_albums, menu);
 
         menu.findItem(R.id.select_all).setIcon(ThemeHelper.getToolbarIcon(getContext(), GoogleMaterial.Icon.gmd_select_all));
         menu.findItem(R.id.delete).setIcon(ThemeHelper.getToolbarIcon(getContext(), (GoogleMaterial.Icon.gmd_delete)));
-        menu.findItem(R.id.sharePhotos).setIcon(ThemeHelper.getToolbarIcon(getContext(),(GoogleMaterial.Icon.gmd_share)));
         menu.findItem(R.id.sort_action).setIcon(ThemeHelper.getToolbarIcon(getContext(),(GoogleMaterial.Icon.gmd_sort)));
-        menu.findItem(R.id.filter_menu).setIcon(ThemeHelper.getToolbarIcon(getContext(), (GoogleMaterial.Icon.gmd_filter_list)));
+        menu.findItem(R.id.search_action).setIcon(ThemeHelper.getToolbarIcon(getContext(), (GoogleMaterial.Icon.gmd_search)));
     }
 
     @Override
@@ -227,72 +210,38 @@ public class PhotoAlbumFragment extends BaseFragment {
         menu.findItem(R.id.select_all).setTitle(
                 getSelectedCount() == getCount()
                         ? R.string.clear_selected
-                        : R.string.select_all);
-        if (editMode) {
-            menu.findItem(R.id.filter_menu).setVisible(false);
-            menu.findItem(R.id.sort_action).setVisible(false);
-        } else {
-            menu.findItem(R.id.filter_menu).setVisible(true);
-            menu.findItem(R.id.sort_action).setVisible(true);
+                        : R.string.clear_selected);
 
+        if (!editMode) {
             menu.findItem(R.id.ascending_sort_order).setChecked(sortingOrder() == SortingOrder.ASCENDING);
             switch (sortingMode()) {
-                case DATE: default:
-                    menu.findItem(R.id.date_taken_sort_mode).setChecked(true); break;
             }
+        }
+
+        if (oneSelected) {
+            Album selectedAlbum = adapter.getFirstSelectedAlbum();
+            menu.findItem(R.id.pin_album).setTitle(selectedAlbum.isPinned() ? getString(R.string.un_pin) : getString(R.string.pin));
+            menu.findItem(R.id.clear_album_cover).setVisible(selectedAlbum.hasCover());
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        Album selectedAlbum = adapter.getFirstSelectedAlbum();
         switch (item.getItemId()) {
 
-            case R.id.all_media_filter:
-                album.setFilterMode(FilterMode.ALL);
-                item.setChecked(true);
-                display();
-                return true;
-
-            case R.id.video_media_filter:
-                album.setFilterMode(FilterMode.VIDEO);
-                item.setChecked(true);
-                display();
-                return true;
-
-            case R.id.image_media_filter:
-                album.setFilterMode(FilterMode.IMAGES);
-                item.setChecked(true);
-                display();
-                return true;
-
-            case R.id.sharePhotos:
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.sent_to_action));
-
-                ArrayList<Uri> files = new ArrayList<>();
-                for (Media f : adapter.getSelected())
-                    files.add(f.getUri());
-
-                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-                intent.setType("*/*");
-                startActivity(Intent.createChooser(intent, getResources().getText(R.string.send_to)));
-                return true;
-
-            case R.id.set_as_cover:
-                String path = adapter.getFirstSelected().getPath();
-                album.setCover(path);
-                db().setCover(album.getPath(), path);
-                adapter.clearSelected();
-                return true;
-
-            case R.id.select_all:
-                if (adapter.getSelectedCount() == adapter.getItemCount())
+            case R.id.clear_album_cover:
+                if (selectedAlbum != null) {
+                    selectedAlbum.removeCoverAlbum();
+                    db().setCover(selectedAlbum.getPath(), null);
                     adapter.clearSelected();
-                else adapter.selectAll();
-                return true;
+                    adapter.notifyItemChanaged(selectedAlbum);
+                    // TODO: 4/5/17 updateui
+                    return true;
+                }
 
+                return false;
         }
 
         return super.onOptionsItemSelected(item);
@@ -323,26 +272,4 @@ public class PhotoAlbumFragment extends BaseFragment {
         refresh.setColorSchemeColors(t.getAccentColor());
         refresh.setProgressBackgroundColorSchemeColor(t.getBackgroundColor());
     }
-    public interface OnMediaSelectedPhotoAlbum {
-        void onMediaSelected(String message, String type, boolean backPressed);
-    }
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            OnMediaSelectedPhotoAlbum mCallback = (OnMediaSelectedPhotoAlbum) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement ProgressBar");
-        }
-    }
-
-    /*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        act = ((MainActivity) context);
-    }
-*/
-
 }

@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,22 +46,25 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
-public class RvMediaFragment extends BaseFragment {
+
+public class RvMediaFragmentPhoto extends BaseFragment {
 
     private static final String TAG = "asd";
 
-    @BindView(R.id.media) RecyclerView rv;
-    @BindView(R.id.swipe_refresh) SwipeRefreshLayout refresh;
+    @BindView(R.id.media)
+    RecyclerView rv;
+    @BindView(R.id.swipe_refresh)
+    SwipeRefreshLayout refresh;
 
     private MediaAdapter adapter;
     private GridSpacingItemDecoration spacingDecoration;
 
-    private MainActivity act;
+    private MainAlbumListActivity act;
 
     private Album album;
 
-    public static RvMediaFragment make(Album album) {
-        RvMediaFragment f = new RvMediaFragment();
+    public static RvMediaFragmentPhoto make(Album album) {
+        RvMediaFragmentPhoto f = new RvMediaFragmentPhoto();
         Bundle bundle = new Bundle();
         bundle.putParcelable("album", album);
         f.setArguments(bundle);
@@ -78,7 +82,7 @@ public class RvMediaFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        act = ((MainActivity) context);
+        act = ((MainAlbumListActivity) context);
     }
 
     @Override
@@ -109,7 +113,7 @@ public class RvMediaFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_rv_media, null);
+        View v = inflater.inflate(R.layout.fragment_rv_media_fragment_photo, null);
         ButterKnife.bind(this, v);
 
         int spanCount = columnsCount();
