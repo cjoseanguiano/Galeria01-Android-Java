@@ -15,19 +15,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
+<!--
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
+-->
 
-            <FrameLayout
+            <!--<FrameLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/content"-->
+                <!--/>-->
+
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/content"
-                />
-
-            <!--<include layout="@layout/there_is_nothing_to_show"/>-->
-
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>

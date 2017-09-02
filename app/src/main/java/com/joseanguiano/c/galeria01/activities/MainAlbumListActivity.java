@@ -8,22 +8,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
 
-import com.joseanguiano.c.galeria01.BuildConfig;
 import com.joseanguiano.c.galeria01.R;
 import com.joseanguiano.c.galeria01.activities.base.SharedMediaActivity;
 import com.joseanguiano.c.galeria01.data.Album;
-
 import com.joseanguiano.c.galeria01.fragments.BaseFragment;
 import com.joseanguiano.c.galeria01.fragments.PhotoAlbumFragment;
 import com.joseanguiano.c.galeria01.fragments.RvMediaFragmentPhoto;
 import com.joseanguiano.c.galeria01.fragments.VideoAlbumFragment;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.typeface.IIcon;
 
 import butterknife.BindView;
 
@@ -32,22 +25,23 @@ public class MainAlbumListActivity extends SharedMediaActivity {
     private boolean albumsMode = true;
     PhotoAlbumFragment albumsFragment = new PhotoAlbumFragment();
     private boolean pickMode = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_album_list);
 
-       /* ViewPager viewPager = findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);*/
+        tabLayout.setupWithViewPager(viewPager);
 
         initUi();
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content, albumsFragment, "albums")
+                .replace(R.id.viewpager, albumsFragment, "albums")
                 .commit();
     }
 
@@ -61,51 +55,43 @@ public class MainAlbumListActivity extends SharedMediaActivity {
         viewPager.setAdapter(adapter);
     }
 
+    @BindView(R.id.coordinator_main_layout)
+    CoordinatorLayout mainLayout;
 
 
+    public void displayMedia(Album album) {
+        albumsMode = false;
 
-        @BindView(R.id.drawer_layout)
-        DrawerLayout drawer;
-        @BindView(R.id.toolbar)
-        Toolbar toolbar;
-        @BindView(R.id.coordinator_main_layout)
-        CoordinatorLayout mainLayout;
-
-
-
-        public void displayMedia(Album album) {
-            albumsMode = false;
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content, RvMediaFragmentPhoto.make(album), "media")
-                    .addToBackStack(null)
-                    .commit();
-        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.viewpager, RvMediaFragmentPhoto.make(album), "media")
+                .addToBackStack(null)
+                .commit();
+    }
 
 
-        @Override
-        public void onConfigurationChanged(Configuration newConfig) {
-            super.onConfigurationChanged(newConfig);
-        }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
-        public void goBackToAlbums() {
-            albumsMode = true;
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            getSupportFragmentManager().popBackStack();
-        }
+    public void goBackToAlbums() {
+        albumsMode = true;
+//        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        getSupportFragmentManager().popBackStack();
+    }
 
-        private void initUi() {
+    private void initUi() {
 
 
-            displayMedia(Album.getAllMediaAlbum());
+        displayMedia(Album.getAllMediaAlbum());
 
-        }
+    }
 
-        @Override
-        protected void onPostResume() {
-            super.onPostResume();
-        }
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
 
 
 
@@ -128,20 +114,20 @@ public class MainAlbumListActivity extends SharedMediaActivity {
         }
 
 */
+/*
+    @Override
+    public void onBackPressed() {
 
-        @Override
-        public void onBackPressed() {
-
-            if (albumsMode) {
-                if (!albumsFragment.onBackPressed()) {
-                    if (drawer.isDrawerOpen(GravityCompat.START))
-                        drawer.closeDrawer(GravityCompat.START);
-                    else finish();
-                }
-            } else {
-                if (!((BaseFragment) getSupportFragmentManager().findFragmentByTag("media")).onBackPressed())
-                    goBackToAlbums();
+        if (albumsMode) {
+            if (!albumsFragment.onBackPressed()) {
+                if (drawer.isDrawerOpen(GravityCompat.START))
+                    drawer.closeDrawer(GravityCompat.START);
+                else finish();
             }
+        } else {
+            if (!((BaseFragment) getSupportFragmentManager().findFragmentByTag("media")).onBackPressed())
+                goBackToAlbums();
         }
+    }*/
 
 }

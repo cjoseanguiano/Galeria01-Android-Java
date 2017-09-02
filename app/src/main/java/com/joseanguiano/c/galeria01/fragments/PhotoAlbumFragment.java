@@ -1,18 +1,13 @@
 package com.joseanguiano.c.galeria01.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,19 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Toast;
 
 import com.joseanguiano.c.galeria01.R;
-import com.joseanguiano.c.galeria01.activities.MainActivity;
 import com.joseanguiano.c.galeria01.activities.MainAlbumListActivity;
 import com.joseanguiano.c.galeria01.adapters.AlbumsAdapter;
-import com.joseanguiano.c.galeria01.adapters.MediaAdapter;
 import com.joseanguiano.c.galeria01.data.Album;
 import com.joseanguiano.c.galeria01.data.AlbumsHelper;
 import com.joseanguiano.c.galeria01.data.HandlingAlbums;
-import com.joseanguiano.c.galeria01.data.Media;
-import com.joseanguiano.c.galeria01.data.filter.FilterMode;
-import com.joseanguiano.c.galeria01.data.filter.MediaFilter;
 import com.joseanguiano.c.galeria01.data.provider.CPHelper;
 import com.joseanguiano.c.galeria01.data.sort.SortingMode;
 import com.joseanguiano.c.galeria01.data.sort.SortingOrder;
@@ -42,7 +31,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
