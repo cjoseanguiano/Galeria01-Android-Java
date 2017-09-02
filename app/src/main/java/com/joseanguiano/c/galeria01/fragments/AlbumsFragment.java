@@ -47,10 +47,8 @@ public class AlbumsFragment extends BaseFragment {
 
     private static final String TAG = "asd";
 
-    @BindView(R.id.albums)
-    RecyclerView rv;
-    @BindView(R.id.swipe_refresh)
-    SwipeRefreshLayout refresh;
+    @BindView(R.id.albums) RecyclerView rv;
+    @BindView(R.id.swipe_refresh) SwipeRefreshLayout refresh;
 
     private AlbumsAdapter adapter;
     private GridSpacingItemDecoration spacingDecoration;
@@ -77,7 +75,7 @@ public class AlbumsFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
-//        updateToolbar();
+        updateToolbar();
     }
 
     private void displayAlbums() {
@@ -128,7 +126,7 @@ public class AlbumsFragment extends BaseFragment {
                 : Hawk.get("n_columns_folders_landscape", 3);
     }
 
-   /* private void updateToolbar() {
+    private void updateToolbar() {
         if (editMode())
             //todo improve
             act.updateToolbar(
@@ -137,7 +135,7 @@ public class AlbumsFragment extends BaseFragment {
                     GoogleMaterial.Icon.gmd_check,
                     v -> adapter.clearSelected());
         else act.resetToolbar();
-    }*/
+    }
 
     @Nullable
     @Override
@@ -153,18 +151,19 @@ public class AlbumsFragment extends BaseFragment {
         rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
 
-        adapter = new AlbumsAdapter(getContext(), sortingMode(), sortingOrder());
+        adapter = new AlbumsAdapter(
+                getContext(), sortingMode(), sortingOrder());
 
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
-//                .subscribe(album -> act.displayMedia(album));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(album -> act.displayMedia(album));
 
         adapter.getSelectedClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
-//                    updateToolbar();
+                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 

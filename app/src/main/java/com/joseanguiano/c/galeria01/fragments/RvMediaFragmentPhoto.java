@@ -38,6 +38,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,7 +129,9 @@ public class RvMediaFragmentPhoto extends BaseFragment {
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pos -> Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show());
+                .subscribe(pos -> {
+                    Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show();
+                });
 
         adapter.getSelectedClicks()
                 .subscribeOn(Schedulers.newThread())
@@ -171,6 +174,19 @@ public class RvMediaFragmentPhoto extends BaseFragment {
                 ? Hawk.get("n_columns_media", 3)
                 : Hawk.get("n_columns_media_landscape", 4);
     }
+
+/*    private void updateToolbar() {
+        if (editMode())
+            act.updateToolbar(
+                    String.format(Locale.ENGLISH, "%d/%d",
+                            adapter.getSelectedCount(), adapter.getItemCount()),
+                    GoogleMaterial.Icon.gmd_check,
+                    v -> adapter.clearSelected());
+        else act.updateToolbar(
+                album.getName(),
+                GoogleMaterial.Icon.gmd_arrow_back,
+                v -> act.goBackToAlbums());
+    }*/
 
     public SortingMode sortingMode() {
         return adapter != null

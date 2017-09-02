@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 
 import com.joseanguiano.c.galeria01.R;
+import com.joseanguiano.c.galeria01.activities.MainActivity;
 import com.joseanguiano.c.galeria01.activities.MainAlbumListActivity;
 import com.joseanguiano.c.galeria01.adapters.AlbumsAdapter;
 import com.joseanguiano.c.galeria01.data.Album;
@@ -31,6 +32,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,10 +45,8 @@ public class PhotoAlbumFragment extends BaseFragment {
 
     private static final String TAG = "asd";
 
-    @BindView(R.id.albums)
-    RecyclerView rv;
-    @BindView(R.id.swipe_refresh)
-    SwipeRefreshLayout refresh;
+    @BindView(R.id.albums) RecyclerView rv;
+    @BindView(R.id.swipe_refresh) SwipeRefreshLayout refresh;
 
     private AlbumsAdapter adapter;
     private GridSpacingItemDecoration spacingDecoration;
@@ -73,6 +73,7 @@ public class PhotoAlbumFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
+//        updateToolbar();
     }
 
     private void displayAlbums() {
@@ -123,6 +124,16 @@ public class PhotoAlbumFragment extends BaseFragment {
                 : Hawk.get("n_columns_folders_landscape", 3);
     }
 
+/*    private void updateToolbar() {
+        if (editMode())
+            //todo improve
+            act.updateToolbar(
+                    String.format(Locale.ENGLISH, "%d/%d",
+                            adapter.getSelectedCount(), adapter.getItemCount()),
+                    GoogleMaterial.Icon.gmd_check,
+                    v -> adapter.clearSelected());
+        else act.resetToolbar();
+    }*/
 
     @Nullable
     @Override
@@ -149,6 +160,7 @@ public class PhotoAlbumFragment extends BaseFragment {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
+//                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 

@@ -37,6 +37,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,11 +86,14 @@ public class RvMediaFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         clearSelected();
+        updateToolbar();
     }
 
     private void display() {
 
         adapter.clear();
+
+
         CPHelper.getMedia(getContext(), album, sortingMode(), sortingOrder())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,6 +107,7 @@ public class RvMediaFragment extends BaseFragment {
                             album.setCount(getCount());
                             refresh.setRefreshing(false);
                         });
+
     }
 
     @Nullable
@@ -119,17 +124,21 @@ public class RvMediaFragment extends BaseFragment {
         rv.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         rv.setItemAnimator(new LandingAnimator(new OvershootInterpolator(1f)));
 
-        adapter = new MediaAdapter(getContext(), sortingMode(), sortingOrder());
+        adapter = new MediaAdapter(
+                getContext(), sortingMode(), sortingOrder());
 
         adapter.getClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pos -> Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show());
+                .subscribe(pos -> {
+                    Toast.makeText(getContext(), album.toString(), Toast.LENGTH_SHORT).show();
+                });
 
         adapter.getSelectedClicks()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(album -> {
+                    updateToolbar();
                     getActivity().invalidateOptionsMenu();
                 });
 
@@ -166,6 +175,19 @@ public class RvMediaFragment extends BaseFragment {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
                 ? Hawk.get("n_columns_media", 3)
                 : Hawk.get("n_columns_media_landscape", 4);
+    }
+
+    private void updateToolbar() {
+        if (editMode())
+            act.updateToolbar(
+                    String.format(Locale.ENGLISH, "%d/%d",
+                            adapter.getSelectedCount(), adapter.getItemCount()),
+                    GoogleMaterial.Icon.gmd_check,
+                    v -> adapter.clearSelected());
+        else act.updateToolbar(
+                album.getName(),
+                GoogleMaterial.Icon.gmd_arrow_back,
+                v -> act.goBackToAlbums());
     }
 
     public SortingMode sortingMode() {
